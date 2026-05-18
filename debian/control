@@ -1,0 +1,15 @@
+Source: toolbox-atom
+Priority: optional
+Maintainer: Matthias Kruk <m@m10k.eu>
+Build-Depends: debhelper (>= 9), make, coreutils, findutils
+Standards-Version: 3.9.8
+Section: shells
+Homepage: https://m10k.eu/toolbox
+
+Package: toolbox-atom
+Section: shells
+Architecture: all
+Depends: toolbox, curl, jq, coreutils, uuid-runtime
+Description: Toolbox module for generating Atom feeds
+ This package provides a toolbox module for generating
+ Atom feeds.
