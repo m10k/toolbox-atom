@@ -160,23 +160,44 @@ atom_xml_time() {
 atom_xml_link() {
 	local link="$1"
 
-	local rel
-	local href
-	local title
-	local type
-	local content
+	local -A props
+	local prop
+	local xml
 
-	if ! rel=$(< "$link/rel") ||
-	   ! href=$(< "$link/href") ||
-	   ! title=$(< "$link/title") ||
-	   ! type=$(< "$link/type") ||
-	   ! content=$(< "$link/content"); then
+	props=(
+		["href"]=""
+		["rel"]=""
+		["title"]=""
+		["type"]=""
+		["content"]="" # Technically not a property
+	)
+
+	for prop in "${!props[@]}"; do
+		props["$prop"]=$(cat "$link/$prop" 2>/dev/null)
+        done
+
+	# Link tags must have a href attribute. Any
+	# other attributes are optional.
+
+	if [[ -z "${props["href"]}" ]]; then
 		return 1
 	fi
 
-	printf '<link rel="%s" href="%s" title="%s" type="%s">%s</link>\n'
-	       "$rel" "$href" "$title" "$type" "$content"
+	xml="<link href=\"${props["href"]}\""
 
+	for prop in "rel" "title" "type"; do
+		if [[ -n "${props["$prop"]}" ]]; then
+			xml+=" $prop=\"${props["$prop"]}\""
+		fi
+	done
+
+	if [[ -n "${props["content"]}" ]]; then
+		xml+=">${props["content"]}</link>"
+	else
+		xml+=" />"
+	fi
+
+	printf '%s\n' "$xml"
 	return 0
 }
 
