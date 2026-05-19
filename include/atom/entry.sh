@@ -112,11 +112,9 @@ atom_entry_add_link() {
 	local type="$5"
 	local content="$6"
 
-	local -i id
 	local link
 
-	id="$EPOCHREALTIME"
-	link="$entry/links/$id"
+	link="$entry/links/$EPOCHREALTIME"
 
 	if ! mkdir -p "$link"; then
 		return 1
